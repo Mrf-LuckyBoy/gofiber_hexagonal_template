@@ -1,0 +1,41 @@
+# Binaries
+/bin/
+/build/
+/*.exe
+/*.exe~
+/*.dll
+/*.so
+/*.dylib
+
+# Output of 'go test'
+/*.test
+*.out
+
+# Dependency directories
+/vendor/
+
+# Go modules
+/go.sum
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Fiber cache (if you use caching)
+.cache/
+
+# Temporary files
+*.tmp
+
+# Optional: database files (if using SQLite for testing)
+*.db
+*.sqlite
