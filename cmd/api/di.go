@@ -6,15 +6,18 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	httpadapter "github.com/Mrf-LuckyBoy/test-go/internal/adapters/http"
+	httpadapter "github.com/Mrf-LuckyBoy/test-go/internal/adapters/http/handlers"
 	"github.com/Mrf-LuckyBoy/test-go/internal/adapters/repository/mariadb"
-	"github.com/Mrf-LuckyBoy/test-go/internal/core/usecase"
+	"github.com/Mrf-LuckyBoy/test-go/internal/adapters/thirdparty"
+	"github.com/Mrf-LuckyBoy/test-go/internal/core/domain"
+	"github.com/Mrf-LuckyBoy/test-go/internal/service"
 	"github.com/Mrf-LuckyBoy/test-go/pkg/config"
-	"github.com/Mrf-LuckyBoy/test-go/pkg/logger"
 )
 
 type Container struct {
 	BookHandler *httpadapter.BookHandler
+	AuthHandler *httpadapter.AuthHandler
+	UserHandler *httpadapter.UserHandler
 }
 
 func BuildContainer(cfg *config.Config) *Container {
@@ -27,15 +30,19 @@ func BuildContainer(cfg *config.Config) *Container {
 	if err != nil {
 		panic(fmt.Errorf("failed to connect database: %w", err))
 	}
+	db.AutoMigrate(&domain.Book{})
 
 	// call repository, service, handler constructors
-	repo := mariadb.NewBookRepositoryMariaDB(db)
-	if err := repo.AutoMigrate(); err != nil {
-		logger.L.Println("migration failed:", err)
-	}
+	bookRepo := mariadb.NewBookRepositoryMariaDB(db)
+	bookService := service.NewBookService(bookRepo)
+	userClient := thirdparty.NewUserAPIClient("https://6785e2a7f80b78923aa4afb7.mockapi.io/api/v1")
+	userService := service.NewUserService(userClient)
+	// handler
+	bookHandler := httpadapter.NewBookHandler(bookService)
+	authHandler := httpadapter.NewAuthHandler(cfg.JWTSecret)
+	userHandler := httpadapter.NewUserHandler(userService)
 
-	svc := usecase.NewBookService(repo)
-	bh := httpadapter.NewBookHandler(svc)
-
-	return &Container{BookHandler: bh}
+	return &Container{BookHandler: bookHandler, AuthHandler: authHandler, UserHandler: userHandler}
 }
+
+// bookService

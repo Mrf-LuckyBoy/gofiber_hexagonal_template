@@ -38,7 +38,7 @@ Includes JWT authentication (cookie-based) and integration with third-party APIs
 fiber-hex/
 ├─ cmd/api/                  # Entry point
 │  ├─ main.go
-│  └─ bootstrap.go
+│  └─ di.go                 # ependency injection
 ├─ internal/
 │  ├─ core/
 │  │  ├─ domain/            # Domain entities

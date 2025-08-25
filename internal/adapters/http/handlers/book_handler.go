@@ -1,4 +1,4 @@
-package http
+package handlers
 
 import (
 	"github.com/Mrf-LuckyBoy/test-go/internal/core/ports"

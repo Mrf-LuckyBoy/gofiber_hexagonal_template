@@ -19,11 +19,6 @@ func NewBookRepositoryMariaDB(db *gorm.DB) *BookRepositoryMariaDB {
 	return &BookRepositoryMariaDB{db: db}
 }
 
-// AutoMigrate ensures schema is ready
-func (r *BookRepositoryMariaDB) AutoMigrate() error {
-	return r.db.AutoMigrate(&domain.Book{})
-}
-
 func (r *BookRepositoryMariaDB) Create(book *domain.Book) error {
 	return r.db.Create(book).Error
 }

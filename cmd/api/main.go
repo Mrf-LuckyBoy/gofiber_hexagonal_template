@@ -24,7 +24,7 @@ func main() {
 	})
 
 	// register http adpter from dependency injection container
-	httpadapter.RegisterRoutes(app, c.BookHandler)
+	httpadapter.RegisterRoutes(app, c.BookHandler, c.AuthHandler, c.UserHandler, cfg.JWTSecret)
 
 	// port server start
 	addr := ":" + cfg.Port
