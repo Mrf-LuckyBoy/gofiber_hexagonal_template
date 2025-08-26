@@ -15,8 +15,6 @@ Includes JWT authentication (cookie-based) and integration with third-party APIs
 * [API Endpoints](#api-endpoints)
 * [JWT Authentication](#jwt-authentication)
 * [Third-Party API Integration](#third-party-api-integration)
-* [Testing](#testing)
-* [Next Steps](#next-steps)
 
 ---
 
@@ -133,27 +131,3 @@ GET /health
 * Use ports to call external API from use case
 
 ---
-
-## Testing
-
-Unit tests for use case logic can run without Fiber or DB:
-
-```bash
-go test ./internal/core/usecase/...
-```
-
----
-
-## Next Steps
-
-* Add more entities and relations (Author → Books)
-* Dockerize backend + MariaDB
-* Add OpenAPI/Swagger documentation
-* Add middleware (logging, CORS, rate-limiting)
-* CI/CD integration
-
----
-
-## License
-
-MIT License

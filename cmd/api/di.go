@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
+	"github.com/Mrf-LuckyBoy/test-go/internal/adapters/cache"
 	httpadapter "github.com/Mrf-LuckyBoy/test-go/internal/adapters/http/handlers"
 	"github.com/Mrf-LuckyBoy/test-go/internal/adapters/repository/mariadb"
 	"github.com/Mrf-LuckyBoy/test-go/internal/adapters/thirdparty"
@@ -30,13 +31,17 @@ func BuildContainer(cfg *config.Config) *Container {
 	if err != nil {
 		panic(fmt.Errorf("failed to connect database: %w", err))
 	}
-	db.AutoMigrate(&domain.Book{})
+	db.AutoMigrate(
+		&domain.Book{},
+	)
+
+	memCache := cache.NewRistrettoCache()
 
 	// call repository, service, handler constructors
 	bookRepo := mariadb.NewBookRepositoryMariaDB(db)
-	bookService := service.NewBookService(bookRepo)
+	bookService := service.NewBookService(bookRepo, memCache)
 	userClient := thirdparty.NewUserAPIClient("https://6785e2a7f80b78923aa4afb7.mockapi.io/api/v1")
-	userService := service.NewUserService(userClient)
+	userService := service.NewUserService(userClient, memCache)
 	// handler
 	bookHandler := httpadapter.NewBookHandler(bookService)
 	authHandler := httpadapter.NewAuthHandler(cfg.JWTSecret)
